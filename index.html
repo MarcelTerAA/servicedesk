@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Oefenexamens Servicedesk B1-K2 – Ter AA</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="icon" href="assets/a.svg" type="image/svg+xml">
+<style>
+:root{--basis:#EFA242;--d-oranje:#D2652A;--m-groen:#26C373;--tekst:#1E2426;--zacht:#53666B;--lijn:#E4E1DA;--vlak:#FBF8F2}
+*{box-sizing:border-box}
+body{margin:0;font-family:Poppins,system-ui,sans-serif;color:var(--tekst);background:var(--vlak);min-height:100dvh;display:flex;flex-direction:column}
+.hero{background:var(--tekst);color:#fff;padding:2rem 1.5rem 2.4rem}
+.hero .binnen{max-width:860px;margin:0 auto;display:flex;align-items:center;gap:1.5rem}
+.hero h1{margin:0 0 .3rem;font-size:1.7rem;line-height:1.2}
+.hero p{margin:0;color:#cfd6d8}
+.tag{display:inline-block;background:var(--basis);color:var(--tekst);border-radius:99px;padding:.15rem .7rem;font-size:.75rem;font-weight:700;margin-bottom:.6rem}
+.logo{width:110px;color:var(--basis);margin-left:auto;flex:0 0 auto}
+.logo svg{width:100%;height:auto}
+main{max-width:860px;margin:-1.2rem auto 2rem;padding:0 1.5rem;width:100%;flex:1}
+.dagen{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem}
+@media (max-width:700px){.dagen{grid-template-columns:1fr 1fr}.logo{display:none}}
+.dag{background:#fff;border:1px solid var(--lijn);border-radius:16px;padding:1.1rem 1rem;text-decoration:none;color:inherit;position:relative;overflow:hidden;display:flex;flex-direction:column;gap:.3rem;min-height:150px}
+.dag::before{content:"";position:absolute;left:0;right:0;top:0;height:4px;background:var(--basis)}
+.dag .nr{font-size:2rem;font-weight:700;line-height:1}
+.dag .st{font-size:.8rem;color:var(--zacht)}
+.dag .ga{margin-top:auto;font-weight:600;color:var(--d-oranje)}
+.dag:hover{box-shadow:0 6px 20px rgba(0,0,0,.08)}
+.dag.dicht{opacity:.5;pointer-events:none}
+.dag.dicht::before{background:var(--lijn)}
+.dag.klaar::before{background:var(--m-groen)}
+.uitleg{background:#fff;border:1px solid var(--lijn);border-radius:16px;padding:1.1rem 1.3rem;margin-top:1.2rem;font-size:.9rem}
+.uitleg h2{font-size:1rem;margin:0 0 .4rem}
+.uitleg ul{margin:.3rem 0 0;padding-left:1.2rem}
+footer{text-align:center;font-size:.75rem;color:var(--zacht);padding:1rem}
+</style>
+</head>
+<body>
+<section class="hero"><div class="binnen">
+  <div>
+    <span class="tag">Kerntaak B1-K2 · Medewerker ICT</span>
+    <h1>Oefenexamens Servicedesk</h1>
+    <p>Werk een dag op de Servicedesk ICT van Het Verhalenhuis: e-mails verwerken, meldingen registreren en een klant aan de balie helpen.</p>
+  </div>
+  <div class="logo" id="logo"></div>
+</div></section>
+<main>
+  <div class="dagen" id="dagen"></div>
+  <div class="uitleg">
+    <h2>Zo werkt het</h2>
+    <ul>
+      <li>Open de dag die je docent aangeeft.</li>
+      <li>De SLA, procedures, scripts en escalatiematrix staan in het examen onder <b>📘 SLA &amp; procedures</b>.</li>
+      <li>Je werk wordt bewaard in deze browser, op dit apparaat. Werk dus op één laptop en in één browser.</li>
+      <li>Klaar? Klik op <b>Inleveren</b> en sla het overzicht op als PDF.</li>
+    </ul>
+  </div>
+</main>
+<footer>Ter AA · ICT &amp; Design College · oefenmateriaal, geen officieel examen</footer>
+<script src="assets/logo.js"></script>
+<script src="data/dagen.js"></script>
+<script>
+document.getElementById('logo').innerHTML = window.TERAA_LOGO || '';
+document.getElementById('dagen').innerHTML = Object.keys(DAGEN).map(n => {
+  const d = DAGEN[n];
+  let st = 'Nog niet beschikbaar', kl = 'dicht';
+  if (d.open) {
+    kl = ''; st = d.mails.length + ' e-mails' + (d.balie && d.balie.aantal ? ' · ' + d.balie.aantal + ' balie' : '');
+    try {
+      const s = JSON.parse(localStorage.getItem('sd_oefenexamen_dag' + n) || '{}');
+      if (s.start) {
+        const klaar = Object.values(s.mails || {}).filter(m => m.klaar).length + (s.balie || []).filter(b => b.klaar).length;
+        const tot = d.mails.length + ((d.balie && d.balie.aantal) || 0);
+        st += '<br>' + klaar + ' van ' + tot + ' afgerond';
+        if (klaar === tot) kl = 'klaar';
+      }
+    } catch (e) {}
+  }
+  return `<a class="dag ${kl}" href="examen.html?dag=${n}"><span class="st">${d.titel.replace(/\s*\d+$/,'')}</span><span class="nr">${n}</span><span class="st">${st}</span>${d.open ? '<span class="ga">Start →</span>' : ''}</a>`;
+}).join('');
+</script>
+</body>
+</html>

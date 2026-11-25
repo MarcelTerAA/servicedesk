@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Oefenexamen Servicedesk B1-K2 – Ter AA</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="icon" href="assets/a.svg" type="image/svg+xml">
+<style>
+:root{
+  --basis:#EFA242; --d-oker:#CD963C; --d-oranje:#D2652A; --oranje:#FF5900;
+  --l-geel:#FFE398; --l-zalm:#F8CBAF; --l-mint:#A6EBC7; --m-groen:#26C373; --d-groen:#3D6B52;
+  --l-blauw:#B2C6D3; --m-blauw:#6698AD; --d-grijs:#53666B;
+  --tekst:#1E2426; --zacht:#53666B; --lijn:#E4E1DA; --bg:#FFFFFF; --vlak:#FBF8F2;
+}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%}
+body{font-family:Poppins,system-ui,sans-serif;color:var(--tekst);background:var(--vlak);font-size:14px;line-height:1.5}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+.app{height:100dvh;display:flex;flex-direction:column}
+
+/* kopbalk */
+header.kop{display:flex;align-items:center;gap:1rem;padding:.55rem 1rem;background:var(--tekst);color:#fff;flex:0 0 auto}
+.kop .logo{color:var(--basis);width:64px;display:flex}
+.kop .logo svg{width:100%;height:auto}
+.kop .titel{line-height:1.2}
+.kop .titel b{display:block;font-size:.95rem}
+.kop .titel span{font-size:.75rem;color:#cfd6d8}
+.kop .rechts{margin-left:auto;display:flex;align-items:center;gap:.6rem}
+.klok{font-variant-numeric:tabular-nums;background:#2c3436;border-radius:99px;padding:.25rem .75rem;font-size:.8rem}
+.wie{font-size:.8rem;color:#cfd6d8}
+.knop{border:0;border-radius:99px;padding:.45rem 1rem;font-weight:600;background:var(--basis);color:var(--tekst)}
+.knop:hover{filter:brightness(1.05)}
+.knop.licht{background:#fff;color:var(--tekst);border:1px solid var(--lijn)}
+.knop.donker{background:#2c3436;color:#fff}
+.knop.groen{background:var(--m-groen);color:#fff}
+.knop:disabled{opacity:.5;cursor:default}
+
+/* hoofdindeling */
+.romp{flex:1 1 auto;display:flex;min-height:0}
+aside.inbox{width:290px;flex:0 0 auto;background:#fff;border-right:1px solid var(--lijn);display:flex;flex-direction:column;min-height:0}
+.inbox h2{font-size:.75rem;letter-spacing:.06em;text-transform:uppercase;color:var(--zacht);margin:.9rem 1rem .4rem;display:flex;justify-content:space-between}
+.lijst{overflow:auto;flex:1 1 auto}
+.item{display:block;width:100%;text-align:left;border:0;background:none;padding:.6rem 1rem .6rem 1.4rem;border-left:4px solid transparent;position:relative;border-bottom:1px solid #f1eee8}
+.item:hover{background:var(--vlak)}
+.item.actief{background:#FFF6E6;border-left-color:var(--basis)}
+.item .r1{display:flex;justify-content:space-between;gap:.5rem;font-size:.82rem}
+.item .r1 b{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.item .r1 span{color:var(--zacht);font-size:.75rem;flex:0 0 auto}
+.item .r2{font-size:.78rem;color:var(--zacht);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.item .stip{position:absolute;left:.5rem;top:1rem;width:8px;height:8px;border-radius:50%;background:var(--basis)}
+.item.bezig .stip{background:var(--l-geel);outline:1px solid var(--d-oker)}
+.item.klaar .stip{background:var(--m-groen)}
+.item.klaar .r1 b{font-weight:500}
+.voortgang{padding:.8rem 1rem;border-top:1px solid var(--lijn);font-size:.78rem;color:var(--zacht)}
+.balk{height:6px;border-radius:99px;background:#eee;margin-top:.35rem;overflow:hidden}
+.balk i{display:block;height:100%;background:var(--m-groen);width:0}
+
+main#werk{flex:1 1 auto;min-width:0;overflow:auto;padding:1.1rem 1.3rem}
+.rij{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:1.1rem;align-items:start}
+@media (max-width:1100px){.rij{grid-template-columns:1fr}}
+.kaart{background:#fff;border:1px solid var(--lijn);border-radius:16px;padding:1rem 1.1rem;position:relative;overflow:hidden}
+.kaart + .kaart{margin-top:1rem}
+.kaart.accent::before{content:"";position:absolute;left:0;right:0;top:0;height:4px;background:var(--basis)}
+.kaart h3{margin:.1rem 0 .7rem;font-size:1rem}
+.kaart h3 small{font-weight:400;color:var(--zacht);font-size:.78rem;margin-left:.3rem}
+
+/* mail */
+.mailkop{display:grid;grid-template-columns:90px 1fr;gap:.1rem .5rem;font-size:.85rem;margin-bottom:.7rem}
+.mailkop dt{color:var(--zacht)}
+.mailkop dd{margin:0}
+.mailkop .ond{font-weight:600}
+.mailtekst{border-top:1px solid var(--lijn);padding-top:.8rem;white-space:pre-wrap}
+
+/* formulier */
+.veld{display:flex;flex-direction:column;gap:.2rem;margin-bottom:.65rem}
+.veld label{font-size:.75rem;font-weight:600;color:var(--zacht)}
+.twee{display:grid;grid-template-columns:1fr 1fr;gap:0 .8rem}
+select,input[type=text],input[type=number],textarea{border:1px solid #d6d2c9;border-radius:10px;padding:.45rem .6rem;background:#fff;width:100%}
+select:focus,input:focus,textarea:focus{outline:2px solid var(--basis);outline-offset:0;border-color:var(--basis)}
+textarea{resize:vertical;min-height:70px}
+textarea.groot{min-height:190px}
+.hint{font-size:.72rem;color:var(--zacht)}
+.afronden{display:flex;align-items:center;gap:.7rem;justify-content:space-between;flex-wrap:wrap;margin-top:.5rem}
+.vink{display:flex;align-items:center;gap:.45rem;font-weight:600}
+.vink input{width:18px;height:18px;accent-color:var(--m-groen)}
+.opgeslagen{font-size:.72rem;color:var(--d-groen)}
+.verborgen{display:none!important}
+.linkknop{background:none;border:0;color:var(--d-oranje);font-weight:600;padding:0}
+
+/* balie */
+.balieplaat{display:flex;gap:1rem;align-items:center;background:var(--l-geel);border-radius:14px;padding:.9rem 1rem;margin-bottom:1rem}
+.balieplaat .ico{font-size:2rem}
+
+/* startscherm / overlay */
+.overlay{position:fixed;inset:0;background:rgba(30,36,38,.55);display:flex;align-items:center;justify-content:center;z-index:50;padding:1rem}
+.dialoog{background:#fff;border-radius:18px;max-width:640px;width:100%;max-height:calc(100dvh - 2rem);overflow:auto;padding:1.4rem 1.6rem;position:relative}
+.dialoog::before{content:"";position:absolute;left:0;right:0;top:0;height:6px;background:var(--basis)}
+.dialoog h1{font-size:1.35rem;margin:.3rem 0 .2rem}
+.dialoog .sub{color:var(--zacht);margin:0 0 1rem}
+.dialoog ul{padding-left:1.2rem;margin:.4rem 0 1rem}
+.dialoog li{margin-bottom:.25rem}
+.dialoog .knoppen{display:flex;gap:.6rem;justify-content:flex-end;margin-top:1rem}
+
+/* naslag-lade */
+.lade{position:fixed;top:0;right:0;bottom:0;width:min(620px,100%);background:#fff;box-shadow:-8px 0 30px rgba(0,0,0,.15);z-index:40;display:flex;flex-direction:column;transform:translateX(105%);transition:transform .2s}
+.lade.open{transform:none}
+.lade .tabs{display:flex;gap:.3rem;padding:.7rem .9rem;border-bottom:1px solid var(--lijn);align-items:center;flex-wrap:wrap}
+.tab{border:1px solid var(--lijn);background:#fff;border-radius:99px;padding:.3rem .8rem;font-size:.8rem;font-weight:600}
+.tab.actief{background:var(--tekst);color:#fff;border-color:var(--tekst)}
+.lade .sluit{margin-left:auto;border:0;background:none;font-size:1.4rem;line-height:1}
+.lade .inhoud{overflow:auto;padding:1rem 1.3rem 2rem;font-size:.86rem}
+.inhoud h3{margin:.2rem 0 .3rem}
+.inhoud h4{margin:1.1rem 0 .3rem;color:var(--d-oranje)}
+.inhoud .klein,.klein{font-size:.75rem;color:var(--zacht)}
+.inhoud blockquote{margin:.4rem 0 .8rem;padding:.6rem .8rem;background:var(--vlak);border-left:4px solid var(--basis);border-radius:0 8px 8px 0}
+.kolommen{display:grid;grid-template-columns:1fr 1fr;gap:.6rem}
+.kolommen div{background:var(--vlak);border-radius:10px;padding:.5rem .7rem;font-size:.8rem}
+table.matrix,table.tabel{border-collapse:collapse;width:100%;font-size:.8rem;margin:.3rem 0}
+.matrix th,.matrix td,.tabel th,.tabel td{border:1px solid var(--lijn);padding:.35rem .45rem;text-align:left;vertical-align:top}
+.matrix th,.tabel th{background:var(--vlak)}
+.matrix td{text-align:center}
+
+/* inleveren */
+.overzicht td,.overzicht th{padding:.35rem .5rem;border-bottom:1px solid var(--lijn);text-align:left;font-size:.85rem}
+.overzicht{border-collapse:collapse;width:100%}
+.ok{color:var(--d-groen);font-weight:600}
+.nok{color:var(--d-oranje);font-weight:600}
+
+#print{display:none}
+@media print{
+  .app,.overlay,.lade{display:none!important}
+  #print{display:block;font-size:11pt;color:#000}
+  #print .blok{page-break-inside:avoid;border:1px solid #999;border-radius:6px;padding:8px 12px;margin:0 0 10px}
+  #print h1{font-size:16pt;margin:0 0 4px}
+  #print h2{font-size:12pt;margin:0 0 4px}
+  #print table{border-collapse:collapse;width:100%}
+  #print td{padding:2px 6px;vertical-align:top;font-size:10pt}
+  #print td:first-child{width:150px;color:#444}
+  #print pre{white-space:pre-wrap;font-family:inherit;margin:0}
+  #print .nieuw{page-break-before:always}
+}
+@media (max-width:760px){
+  aside.inbox{width:200px}
+  .kop .titel span,.wie{display:none}
+  .twee{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="kop">
+    <div class="logo" id="logo"></div>
+    <div class="titel"><b>Servicedesk ICT · Het Verhalenhuis</b><span id="kopSub">Oefenexamen B1-K2</span></div>
+    <div class="rechts">
+      <span class="wie" id="wie"></span>
+      <span class="klok" id="klok" title="Tijd sinds je bent gestart">⏱ 0:00</span>
+      <button class="knop donker" id="btnNaslag">📘 SLA &amp; procedures</button>
+      <button class="knop" id="btnInleveren">Inleveren</button>
+    </div>
+  </header>
+  <div class="romp">
+    <aside class="inbox">
+      <h2><span>Postvak IN</span><span id="tel"></span></h2>
+      <div class="lijst" id="lijst"></div>
+      <div class="voortgang"><span id="vgTekst"></span><div class="balk"><i id="vgBalk"></i></div></div>
+    </aside>
+    <main id="werk"></main>
+  </div>
+</div>
+
+<div class="lade" id="lade" aria-hidden="true">
+  <div class="tabs" id="ladeTabs"></div>
+  <div class="inhoud" id="ladeInhoud"></div>
+</div>
+
+<div id="print"></div>
+
+<script src="assets/logo.js"></script>
+<script src="data/naslag.js"></script>
+<script src="data/dagen.js"></script>
+<script>
+(function(){
+const params = new URLSearchParams(location.search);
+const DAGNR = params.get('dag') || '1';
+const DAG = DAGEN[DAGNR];
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+document.getElementById('logo').innerHTML = window.TERAA_LOGO || '';
+
+if (!DAG || !DAG.open) {
+  document.getElementById('werk').innerHTML = '<div class="kaart accent"><h3>Deze dag is nog niet beschikbaar</h3><p>Ga terug naar de <a href="./">startpagina</a>.</p></div>';
+  return;
+}
+$('#kopSub').textContent = 'Oefenexamen B1-K2 · ' + DAG.titel;
+
+/* ---------- opslag ---------- */
+const SLEUTEL = 'sd_oefenexamen_dag' + DAGNR;
+let S = {};
+try { S = JSON.parse(localStorage.getItem(SLEUTEL)) || {}; } catch(e) { S = {}; }
+S.mails = S.mails || {};
+S.balie = S.balie || [];
+function bewaar(){ localStorage.setItem(SLEUTEL, JSON.stringify(S)); }
+
+const BALIE_N = (DAG.balie && DAG.balie.aantal) || 0;
+while (S.balie.length < BALIE_N) S.balie.push({});
+
+/* ---------- datum ---------- */
+const DATUM = S.start ? new Date(S.start) : new Date();
+const datumTekst = DATUM.toLocaleDateString('nl-NL', {weekday:'short', day:'numeric', month:'long', year:'numeric'});
+
+/* ---------- klok ---------- */
+function tik(){
+  if (!S.start) return;
+  const min = Math.floor((Date.now() - S.start) / 60000);
+  $('#klok').textContent = '⏱ ' + Math.floor(min/60) + ':' + String(min%60).padStart(2,'0');
+}
+setInterval(tik, 15000);
+
+/* ---------- inbox ---------- */
+let actief = null;
+function statusVan(id){
+  const d = id.startsWith('b') ? S.balie[+id.slice(1)] : S.mails[id];
+  if (!d) return 'nieuw';
+  if (d.klaar) return 'klaar';
+  return Object.keys(d).some(k => k !== 'klaar' && d[k]) ? 'bezig' : 'nieuw';
+}
+function renderLijst(){
+  let h = '';
+  DAG.mails.forEach(m => {
+    h += `<button class="item ${statusVan(m.id)} ${actief===m.id?'actief':''}" data-id="${m.id}">
+      <i class="stip"></i>
+      <div class="r1"><b>${esc(m.van)}</b><span>${m.tijd}</span></div>
+      <div class="r2">${esc(m.onderwerp)}</div></button>`;
+  });
+  if (BALIE_N) {
+    h += '<h2 style="margin-top:1rem"><span>Balie</span></h2>';
+    for (let i=0;i<BALIE_N;i++){
+      const id = 'b'+i, b = S.balie[i];
+      h += `<button class="item ${statusVan(id)} ${actief===id?'actief':''}" data-id="${id}">
+        <i class="stip"></i>
+        <div class="r1"><b>🛎️ Baliegesprek${BALIE_N>1?' '+(i+1):''}</b></div>
+        <div class="r2">${b.melder ? esc(b.melder) + (b.onderwerp ? ' · '+esc(b.onderwerp) : '') : 'Klant aan de balie'}</div></button>`;
+    }
+  }
+  $('#lijst').innerHTML = h;
+  const totaal = DAG.mails.length + BALIE_N;
+  const klaar = DAG.mails.filter(m => statusVan(m.id)==='klaar').length + S.balie.filter(b => b.klaar).length;
+  $('#tel').textContent = DAG.mails.length;
+  $('#vgTekst').textContent = klaar + ' van ' + totaal + ' meldingen afgerond';
+  $('#vgBalk').style.width = (100*klaar/totaal) + '%';
+}
+$('#lijst').addEventListener('click', e => {
+  const b = e.target.closest('.item'); if (!b) return;
+  open(b.dataset.id);
+});
+
+/* ---------- formulier-onderdelen ---------- */
+function opties(lijst, waarde, leeg='— kies —'){
+  return `<option value="">${leeg}</option>` + lijst.map(o => `<option ${o===waarde?'selected':''}>${esc(o)}</option>`).join('');
+}
+function registratie(d){
+  const cats = Object.keys(KEUZES.categorie);
+  const subs = d.categorie ? (KEUZES.categorie[d.categorie] || []) : [];
+  return `
+  <div class="kaart accent">
+    <h3>Registratie in het servicemanagementsysteem</h3>
+    <div class="twee">
+      <div class="veld"><label>Soort melding</label><select data-k="soort">${opties(KEUZES.soort, d.soort)}</select></div>
+      <div class="veld"><label>Status</label><select data-k="status">${opties(KEUZES.status, d.status)}</select></div>
+      <div class="veld"><label>Categorie</label><select data-k="categorie">${opties(cats, d.categorie)}</select></div>
+      <div class="veld"><label>Subcategorie</label><select data-k="subcategorie" ${subs.length?'':'disabled'}>${opties(subs, d.subcategorie, subs.length?'— kies —':'eerst categorie')}</select></div>
+      <div class="veld"><label>Impact</label><select data-k="impact">${opties(KEUZES.impact, d.impact)}</select></div>
+      <div class="veld"><label>Urgentie</label><select data-k="urgentie">${opties(KEUZES.urgentie, d.urgentie)}</select></div>
+      <div class="veld"><label>Prioriteit / doorlooptijd</label><select data-k="prioriteit">${opties(KEUZES.prioriteit, d.prioriteit)}</select></div>
+      <div class="veld"><label>Behandelaar</label><select data-k="behandelaar">${opties(KEUZES.behandelaar, d.behandelaar)}</select></div>
+      <div class="veld"><label>Afgemeld</label><select data-k="afgemeld">${opties(['Ja','Nee'], d.afgemeld)}</select></div>
+    </div>
+    <div class="veld"><label>Actie <span class="hint">– wat heb je gedaan / welk antwoord gegeven / welke actie vraag je aan de specialist? Bij afwijzen: de reden.</span></label>
+      <textarea data-k="actie" rows="4">${esc(d.actie)}</textarea></div>
+    <div class="veld" style="max-width:220px"><label>Bestede tijd (minuten)</label><input type="number" min="0" data-k="tijd" value="${esc(d.tijd)}"></div>
+  </div>`;
+}
+function antwoordmail(d, aan, onderwerp){
+  return `
+  <div class="kaart">
+    <h3>✉️ Antwoord aan de melder</h3>
+    <div class="veld"><label>Aan</label><input type="text" value="${esc(aan)}" disabled></div>
+    <div class="veld"><label>Onderwerp</label><input type="text" data-k="mailOnderwerp" value="${esc(d.mailOnderwerp ?? ('RE: ' + onderwerp))}"></div>
+    <div class="veld"><label>Bericht <span class="hint">– gebruik het juiste script (📘 → Scripts)</span></label>
+      <textarea data-k="mail" class="groot">${esc(d.mail)}</textarea></div>
+    <button class="linkknop" data-actie="bijlage">${d.bijlageAan ? '− Bijlage (instructie) verwijderen' : '📎 Instructie als bijlage toevoegen'}</button>
+    <div class="veld ${d.bijlageAan?'':'verborgen'}" style="margin-top:.6rem"><label>Bijlage: instructie / handleiding <span class="hint">– stap voor stap, zodat de gebruiker het zelf kan</span></label>
+      <textarea data-k="bijlage" class="groot">${esc(d.bijlage)}</textarea></div>
+  </div>`;
+}
+function afrondBalk(d){
+  return `<div class="kaart"><div class="afronden">
+      <label class="vink"><input type="checkbox" data-k="klaar" ${d.klaar?'checked':''}> Melding is helemaal verwerkt</label>
+      <span class="opgeslagen" id="opgeslagen">Wordt automatisch bewaard op dit apparaat</span>
+    </div></div>`;
+}
+
+/* ---------- schermen ---------- */
+function open(id){
+  actief = id;
+  const w = $('#werk');
+  if (id === 'inleveren') { renderInleveren(); renderLijst(); return; }
+  if (id.startsWith('b')) {
+    const i = +id.slice(1), d = S.balie[i];
+    w.innerHTML = `
+      <div class="balieplaat"><span class="ico">🛎️</span><div><b>Er komt een klant aan de balie.</b><br>
+      Je docent speelt de klant. Wacht tot je naar de balie wordt geroepen. Help de klant volgens de procedure en de balie-scripts. Registreer de melding hieronder, tijdens of direct na het gesprek.</div></div>
+      <div class="rij" data-doel="${id}">
+        <div>
+          <div class="kaart accent"><h3>Gegevens van de klant</h3>
+            <div class="twee">
+              <div class="veld"><label>Naam melder</label><input type="text" data-k="melder" value="${esc(d.melder)}" placeholder="Achternaam, voornaam"></div>
+              <div class="veld"><label>Afdeling / locatie</label><input type="text" data-k="afdeling" value="${esc(d.afdeling)}"></div>
+            </div>
+            <div class="veld"><label>Onderwerp – korte omschrijving</label><input type="text" data-k="onderwerp" value="${esc(d.onderwerp)}"></div>
+            <div class="veld"><label>Omschrijving van de vraag</label><textarea data-k="omschrijving" rows="4">${esc(d.omschrijving)}</textarea></div>
+            <div class="veld"><label>Uitleg die je aan de balie hebt gegeven</label><textarea data-k="uitleg" class="groot">${esc(d.uitleg)}</textarea></div>
+          </div>
+          ${afrondBalk(d)}
+        </div>
+        <div>${registratie(d)}</div>
+      </div>`;
+  } else {
+    const m = DAG.mails.find(x => x.id === id), d = S.mails[id] || {};
+    w.innerHTML = `
+      <div class="rij" data-doel="${id}">
+        <div>
+          <div class="kaart accent">
+            <dl class="mailkop">
+              <dt>Van:</dt><dd>${esc(m.van)}</dd>
+              <dt>Verzonden:</dt><dd>${esc(datumTekst)} ${m.tijd}</dd>
+              <dt>Aan:</dt><dd>Servicedesk</dd>
+              <dt>Onderwerp:</dt><dd class="ond">${esc(m.onderwerp)}</dd>
+            </dl>
+            <div class="mailtekst">${esc(m.aanhef)}
+
+${esc(m.tekst)}
+
+Met vriendelijke groet,
+
+${esc(m.van)}</div>
+          </div>
+          ${antwoordmail(d, m.van, m.onderwerp)}
+        </div>
+        <div>${registratie(d)}${afrondBalk(d)}</div>
+      </div>`;
+  }
+  w.scrollTop = 0;
+  renderLijst();
+}
+
+/* invoer bewaren */
+function doelData(el){
+  const rij = el.closest('[data-doel]'); if (!rij) return null;
+  const id = rij.dataset.doel;
+  if (id.startsWith('b')) return S.balie[+id.slice(1)];
+  return (S.mails[id] = S.mails[id] || {});
+}
+let timer;
+$('#werk').addEventListener('input', e => {
+  const k = e.target.dataset.k; if (!k) return;
+  const d = doelData(e.target); if (!d) return;
+  d[k] = e.target.type === 'checkbox' ? e.target.checked : e.target.value;
+  if (k === 'categorie') { d.subcategorie = ''; bewaar(); open(actief); return; }
+  bewaar();
+  if (k === 'klaar' || k === 'melder' || k === 'onderwerp') renderLijst();
+  const o = $('#opgeslagen'); if (o){ o.textContent = '✓ Bewaard'; clearTimeout(timer); timer = setTimeout(()=>{ o.textContent='Wordt automatisch bewaard op dit apparaat'; }, 1500); }
+  if (k === 'klaar') renderLijst();
+});
+$('#werk').addEventListener('change', e => { if (e.target.dataset.k === 'klaar') renderLijst(); });
+$('#werk').addEventListener('click', e => {
+  const a = e.target.closest('[data-actie]'); if (!a) return;
+  if (a.dataset.actie === 'bijlage') {
+    const d = doelData(a); d.bijlageAan = !d.bijlageAan; bewaar(); open(actief);
+  }
+  if (a.dataset.actie === 'print') printen();
+  if (a.dataset.actie === 'naar') open(a.dataset.id);
+});
+
+/* ---------- inleveren ---------- */
+function compleet(d, balie){
+  const ontbreekt = [];
+  if (balie && !d.melder) ontbreekt.push('naam melder');
+  if (!d.soort) ontbreekt.push('soort');
+  if (!d.status) ontbreekt.push('status');
+  if (!d.actie) ontbreekt.push('actie');
+  if (!balie && !d.mail) ontbreekt.push('antwoordmail');
+  return ontbreekt;
+}
+function renderInleveren(){
+  let rijen = '';
+  DAG.mails.forEach((m,i) => {
+    const d = S.mails[m.id] || {}, o = compleet(d,false);
+    rijen += `<tr><td>${i+1}</td><td><button class="linkknop" data-actie="naar" data-id="${m.id}">${esc(m.van)} – ${esc(m.onderwerp)}</button></td>
+      <td>${d.klaar ? '<span class="ok">✓ afgerond</span>' : '<span class="nok">nog niet afgerond</span>'}${o.length?'<br><span class="klein">mist: '+o.join(', ')+'</span>':''}</td></tr>`;
+  });
+  S.balie.forEach((d,i) => {
+    const o = compleet(d,true);
+    rijen += `<tr><td>🛎️</td><td><button class="linkknop" data-actie="naar" data-id="b${i}">Baliegesprek${d.melder?' – '+esc(d.melder):''}</button></td>
+      <td>${d.klaar ? '<span class="ok">✓ afgerond</span>' : '<span class="nok">nog niet afgerond</span>'}${o.length?'<br><span class="klein">mist: '+o.join(', ')+'</span>':''}</td></tr>`;
+  });
+  $('#werk').innerHTML = `
+    <div class="kaart accent" style="max-width:820px">
+      <h3>Inleveren</h3>
+      <p>Controleer of alle meldingen verwerkt zijn. Lever daarna je werk in als PDF:</p>
+      <ol>
+        <li>Klik op <b>Overzicht afdrukken / opslaan als PDF</b>.</li>
+        <li>Kies bij printer <b>Opslaan als PDF</b>.</li>
+        <li>Lever het PDF-bestand in zoals je docent heeft gezegd.</li>
+      </ol>
+      <table class="overzicht"><tr><th>#</th><th>Melding</th><th>Status</th></tr>${rijen}</table>
+      <div class="afronden" style="margin-top:1rem"><span class="klein">Gestart: ${S.start ? new Date(S.start).toLocaleString('nl-NL') : '–'}</span>
+      <button class="knop" data-actie="print">🖨️ Overzicht afdrukken / opslaan als PDF</button></div>
+    </div>`;
+}
+function regTabel(d){
+  const r = (k,l) => `<tr><td>${l}</td><td>${esc(d[k]) || '–'}</td></tr>`;
+  return `<table>${r('soort','Soort melding')}${r('categorie','Categorie')}${r('subcategorie','Subcategorie')}${r('impact','Impact')}${r('urgentie','Urgentie')}${r('prioriteit','Prioriteit')}${r('status','Status')}${r('behandelaar','Behandelaar')}${r('afgemeld','Afgemeld')}${r('tijd','Bestede tijd (min)')}
+  <tr><td>Actie</td><td><pre>${esc(d.actie) || '–'}</pre></td></tr></table>`;
+}
+function printen(){
+  let h = `<h1>Oefenexamen B1-K2 · ${esc(DAG.titel)} – Servicedesk ICT Het Verhalenhuis</h1>
+    <p>Naam: <b>${esc(S.naam)}</b> · Klas: <b>${esc(S.klas)}</b> · Gestart: ${S.start ? new Date(S.start).toLocaleString('nl-NL') : '–'} · Afgedrukt: ${new Date().toLocaleString('nl-NL')}</p>`;
+  DAG.mails.forEach((m,i) => {
+    const d = S.mails[m.id] || {};
+    h += `<div class="blok"><h2>Melding ${i+1}: ${esc(m.onderwerp)} <small>(van ${esc(m.van)})</small></h2>
+      ${regTabel(d)}
+      <p><b>Antwoordmail</b> – onderwerp: ${esc(d.mailOnderwerp ?? ('RE: '+m.onderwerp))}</p><pre>${esc(d.mail) || '–'}</pre>
+      ${d.bijlageAan && d.bijlage ? '<p><b>Bijlage: instructie</b></p><pre>'+esc(d.bijlage)+'</pre>' : ''}
+      <p class="klein">${d.klaar ? '✓ afgerond' : 'niet als afgerond gemarkeerd'}</p></div>`;
+  });
+  S.balie.forEach((d,i) => {
+    h += `<div class="blok"><h2>Baliegesprek${S.balie.length>1?' '+(i+1):''}: ${esc(d.onderwerp)||'–'} <small>(melder: ${esc(d.melder)||'–'}${d.afdeling?', '+esc(d.afdeling):''})</small></h2>
+      <p><b>Omschrijving</b></p><pre>${esc(d.omschrijving)||'–'}</pre>
+      <p><b>Gegeven uitleg</b></p><pre>${esc(d.uitleg)||'–'}</pre>
+      ${regTabel(d)}</div>`;
+  });
+  $('#print').innerHTML = h;
+  window.print();
+}
+
+/* ---------- naslag ---------- */
+let ladeTab = NASLAG[0].id;
+function renderLade(){
+  $('#ladeTabs').innerHTML = NASLAG.map(n => `<button class="tab ${n.id===ladeTab?'actief':''}" data-tab="${n.id}">${n.titel}</button>`).join('') + '<button class="sluit" data-tab="x" aria-label="Sluiten">×</button>';
+  $('#ladeInhoud').innerHTML = NASLAG.find(n => n.id===ladeTab).html;
+}
+$('#ladeTabs').addEventListener('click', e => {
+  const t = e.target.closest('[data-tab]'); if (!t) return;
+  if (t.dataset.tab === 'x') { $('#lade').classList.remove('open'); return; }
+  ladeTab = t.dataset.tab; renderLade(); $('#ladeInhoud').scrollTop = 0;
+});
+$('#btnNaslag').addEventListener('click', () => { renderLade(); $('#lade').classList.toggle('open'); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape') $('#lade').classList.remove('open'); });
+$('#btnInleveren').addEventListener('click', () => open('inleveren'));
+
+/* ---------- start ---------- */
+function welkom(){
+  const ov = document.createElement('div');
+  ov.className = 'overlay';
+  ov.innerHTML = `<div class="dialoog">
+    <h1>Oefenexamen Servicedesk – ${esc(DAG.titel)}</h1>
+    <p class="sub">Kerntaak B1-K2 · Medewerker ICT</p>
+    <p>Je werkt vandaag op de <b>Servicedesk ICT van Het Verhalenhuis</b>. In je postvak staan <b>${DAG.mails.length} e-mails</b>${BALIE_N ? ' en er komt <b>'+BALIE_N+' klant aan de balie</b>' : ''}.</p>
+    <ul>
+      <li>Verwerk elke melding volgens de <b>SLA</b> en de <b>procedures</b> (knop 📘 rechtsboven).</li>
+      <li>Vul per melding de <b>registratie</b> in en schrijf een <b>antwoordmail</b> met het juiste script.</li>
+      <li>Vraagt iemand om een instructie? Voeg die toe als <b>bijlage</b>.</li>
+      <li>Aan de balie speelt je docent de klant. Registreer die melding ook.</li>
+      <li>Alles wordt automatisch bewaard op dit apparaat. Klaar? Klik op <b>Inleveren</b> en sla het overzicht op als PDF.</li>
+    </ul>
+    <div class="twee">
+      <div class="veld"><label>Je naam</label><input type="text" id="inNaam" value="${esc(S.naam)}" autocomplete="name"></div>
+      <div class="veld"><label>Klas</label><input type="text" id="inKlas" value="${esc(S.klas)}"></div>
+    </div>
+    <div class="knoppen"><a class="knop licht" href="./" style="text-decoration:none">Terug</a><button class="knop" id="startKnop">Start het examen</button></div>
+  </div>`;
+  document.body.appendChild(ov);
+  const naam = ov.querySelector('#inNaam'), knop = ov.querySelector('#startKnop');
+  const check = () => knop.disabled = !naam.value.trim();
+  naam.addEventListener('input', check); check(); naam.focus();
+  knop.addEventListener('click', () => {
+    S.naam = naam.value.trim(); S.klas = ov.querySelector('#inKlas').value.trim();
+    S.start = Date.now(); bewaar(); ov.remove(); start();
+  });
+}
+function start(){
+  $('#wie').textContent = S.naam + (S.klas ? ' · ' + S.klas : '');
+  tik(); open(DAG.mails[0].id);
+}
+renderLijst();
+if (!S.start || !S.naam) welkom(); else start();
+})();
+</script>
+</body>
+</html>
